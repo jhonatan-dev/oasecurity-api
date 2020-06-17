@@ -21,11 +21,10 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors);
 
 app.use(require("./routes/index"));
-app.use("/api/v1/validaciones", require("./routes/validacionRoute"));
-app.use("/api/v1/usuarios", require("./routes/usuarioRoute"));
+app.use("/api/v1/validaciones", cors, require("./routes/validacionRoute"));
+app.use("/api/v1/usuarios", cors, require("./routes/usuarioRoute"));
 
 //Iniciando el servidor
 app.listen(app.get("port"), () => {
