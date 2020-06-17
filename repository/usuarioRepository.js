@@ -44,10 +44,7 @@ usuarioRepository.listarUsuarios = async () => {
         "nombres",
         "apellidos",
         "email",
-        "url_foto_rostro",
-        "url_audio_1",
-        "url_audio_2",
-        "url_audio_3",
+        "url_foto_rostro"
       ],
       include: [
         {
