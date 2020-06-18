@@ -61,4 +61,13 @@ usuarioService.listarUsuarios = async () => {
   }
 };
 
+usuarioService.obtenerUsuario = async (id) => {
+  try {
+    let usuario = await usuarioRepository.obtenerUsuario(id);
+    return usuario;
+  } catch (err) {
+    throw new Error(`Error en usuarioService.obtenerUsuario: ${err}`);
+  }
+};
+
 module.exports = usuarioService;

@@ -1,14 +1,18 @@
 "use strict";
 
 const usuarioController = {};
-const usuarioService = require("../services/usuarioService")
+const usuarioService = require("../services/usuarioService");
 
-usuarioController.registrarUsuario = async (usuario) =>{
-    return await usuarioService.registrarUsuario(usuario);
-}
+usuarioController.registrarUsuario = async (usuario) => {
+  return await usuarioService.registrarUsuario(usuario);
+};
 
-usuarioController.listarUsuarios = async () =>{
-    return await usuarioService.listarUsuarios();
-}
+usuarioController.listarUsuarios = async () => {
+  return await usuarioService.listarUsuarios();
+};
+
+usuarioController.obtenerUsuario = async (id) => {
+  return await usuarioService.obtenerUsuario(id);
+};
 
 module.exports = usuarioController;

@@ -2,16 +2,19 @@
 
 const cors = require("cors");
 
-const whitelist = String(process.env.CORS_WHITE_LIST).split(",");
+const whiteListEnv = process.env.CORS_WHITE_LIST;
+const whiteList = whiteListEnv ? String(whiteListEnv).split(",") : null;
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: !whiteList
+    ? "*"
+    : function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
 };
 
 module.exports = cors(corsOptions);

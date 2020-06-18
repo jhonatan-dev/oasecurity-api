@@ -27,7 +27,7 @@ router.post("/", multerConfig, async (req, res) => {
     });
     res.status(200).json(nuevoUsuario).end();
   } catch (error) {
-    res.status(500).json({ mensaje: error }).end();
+    res.status(500).end();
   }
 });
 
@@ -36,7 +36,20 @@ router.get("/", async (req, res) => {
     let usuarios = await usuarioController.listarUsuarios();
     res.status(200).json(usuarios).end();
   } catch (error) {
-    res.status(500).json({ mensaje: error }).end();
+    res.status(500).end();
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    let usuario = await usuarioController.obtenerUsuario(req.params.id);
+    if (usuario) {
+      res.status(200).json(usuario).end();
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    res.status(500).end();
   }
 });
 

@@ -44,7 +44,37 @@ usuarioRepository.listarUsuarios = async () => {
         "nombres",
         "apellidos",
         "email",
-        "url_foto_rostro"
+        "url_foto_rostro",
+      ],
+      include: [
+        {
+          required: true,
+          model: rolModel,
+          where: {
+            id: 2, //Rol Cliente
+          },
+        },
+      ],
+    });
+    return usuarios;
+  } catch (err) {
+    throw new Error(`Error en usuarioRepository.listarUsuarios: ${err}`);
+  }
+};
+
+usuarioRepository.obtenerUsuario = async (id) => {
+  try {
+    let usuario = await usuarioModel.findOne({
+      attributes: [
+        "id",
+        "dni",
+        "nombres",
+        "apellidos",
+        "email",
+        "image_face_id",
+        "url_foto_rostro",
+        "audio_profile_id",
+        "url_audio_grabacion",
       ],
       include: [
         {
@@ -52,10 +82,13 @@ usuarioRepository.listarUsuarios = async () => {
           model: rolModel,
         },
       ],
+      where: {
+        id: Number(id),
+      },
     });
-    return usuarios;
+    return usuario;
   } catch (err) {
-    throw new Error(`Error en usuarioRepository.listarUsuarios: ${err}`);
+    throw new Error(`Error en usuarioRepository.obtenerUsuario: ${err}`);
   }
 };
 
