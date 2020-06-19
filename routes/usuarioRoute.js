@@ -25,8 +25,9 @@ router.post("/", multerConfig, async (req, res) => {
       archivoFotoRostro,
       //archivoAudioGrabacion
     });
-    res.status(200).json(nuevoUsuario).end();
+    res.status(201).json(nuevoUsuario).end();
   } catch (error) {
+    console.error(error);
     res.status(500).end();
   }
 });
@@ -36,6 +37,7 @@ router.get("/", async (req, res) => {
     let usuarios = await usuarioController.listarUsuarios();
     res.status(200).json(usuarios).end();
   } catch (error) {
+    console.error(error);
     res.status(500).end();
   }
 });
@@ -49,6 +51,7 @@ router.get("/:id", async (req, res) => {
       res.status(404).end();
     }
   } catch (error) {
+    console.error(error);
     res.status(500).end();
   }
 });

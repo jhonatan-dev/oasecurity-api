@@ -4,7 +4,7 @@ const validacionService = {};
 const axios = require("axios");
 const https = require("https");
 const { usuarioModel } = require("../models");
-const apiPeruDevConfig = require("../config/apiPeruDevConfig");
+const apiJNEVerificationConfig = require("../config/apiJNEVerificationConfig");
 
 validacionService.existeEmail = async (email = "") => {
   try {
@@ -38,25 +38,35 @@ validacionService.existeDNI = async (dni = "") => {
 
 validacionService.dniValido = async (dni = "") => {
   try {
-    let resultadoPeticion = await axios.get(
-      `${apiPeruDevConfig.urlDNI}/${dni}`,
+    let resultadoPeticion = await axios.post(
+      `${apiJNEVerificationConfig.urlJNErequestVerification}`,
       {
-        headers: { Authorization: `Bearer ${apiPeruDevConfig.token}` },
+        CODDNI: dni,
+      },
+      {
+        headers: {
+          requestVerificationToken:
+            apiJNEVerificationConfig.requestVerificationToken,
+          "Content-Type": "application/json",
+        },
         httpsAgent: new https.Agent({
           rejectUnauthorized: false,
         }),
       }
     );
-    const data = resultadoPeticion.data;
-    if (data.success) {
+    const response = resultadoPeticion.data;
+    if (String(response.data).replace(/\|/g, "").length > 0) {
+      const nombresCompletos = String(response.data).split("|");
       return {
-        nombres: `${data.data.nombres}`,
-        apellidos: `${data.data.apellido_paterno} ${data.data.apellido_materno}`,
+        nombres: `${nombresCompletos[2]}`,
+        apellidos: `${nombresCompletos[0]} ${nombresCompletos[1]}`,
       };
     }
     return null;
   } catch (err) {
-    console.error(`Error en validacionService.dniValido: ${err}`);
+    console.error(
+      `Error en validacionService.dniValido en API Externa: ${err}`
+    );
     return null;
   }
 };
