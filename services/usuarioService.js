@@ -46,7 +46,7 @@ usuarioService.registrarUsuario = async (usuario) => {
     let nuevoUsuario = await usuarioRepository.registrarUsuario(
       usuarioParaGuardar
     );
-    return nuevoUsuario;
+    return nuevoUsuario.toJSON();
   } catch (err) {
     throw new Error(`Error en usuarioService.registrarUsuario: ${err}`);
   }
@@ -61,12 +61,42 @@ usuarioService.listarUsuarios = async () => {
   }
 };
 
-usuarioService.obtenerUsuario = async (id) => {
+usuarioService.obtenerUsuarioPorId = async (id) => {
   try {
-    let usuario = await usuarioRepository.obtenerUsuario(id);
-    return usuario;
+    let usuario = await usuarioRepository.obtenerUsuarioPorId(id);
+    return usuario.toJSON();
   } catch (err) {
-    throw new Error(`Error en usuarioService.obtenerUsuario: ${err}`);
+    throw new Error(`Error en usuarioService.obtenerUsuarioPorId: ${err}`);
+  }
+};
+
+usuarioService.obtenerUsuarioPorEmail = async (email) => {
+  try {
+    let usuario = await usuarioRepository.obtenerUsuarioPorEmail(email);
+    return usuario.toJSON();
+  } catch (err) {
+    throw new Error(`Error en usuarioService.obtenerUsuarioPorEmail: ${err}`);
+  }
+};
+
+usuarioService.login = async (email, password) => {
+  try {
+    let usuario = await usuarioRepository.obtenerUsuarioPorEmail(email);
+    if (usuario) {
+      const passwordsMatches = await bcryptLib.matchPassword(
+        password,
+        usuario.password
+      );
+      if (passwordsMatches) {
+        return usuario.toJSON();
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw new Error(`Error en usuarioService.login: ${err}`);
   }
 };
 

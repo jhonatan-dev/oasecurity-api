@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const usuarioController = require("../controllers/usuarioController");
+const jsonWebTokenConfig = require("../config/jsonWebTokenConfig");
 const multerConfig = multer(
   require("../config/multerConfig").multerConfig
 ).fields([
@@ -11,7 +12,16 @@ const multerConfig = multer(
   { name: "audio_grabacion", maxCount: 1 },
 ]);
 
-router.post("/", multerConfig, async (req, res) => {
+const validApps = (req, res, next) => {
+  const whiteListApps = ["OA_SECURITY_ADMIN", "OA_SECURITY_CLIENT"];
+  const { appcode } = req.headers;
+  if (!appcode || !whiteListApps.includes(appcode)) {
+    return res.status(400).end();
+  }
+  next();
+};
+
+router.post("/", validApps, multerConfig, async (req, res) => {
   const { dni, nombres, apellidos, email, password } = req.body;
   const archivoFotoRostro = req.files["foto_rostro"][0];
   //const archivoAudioGrabacion = req.files["audio_grabacion"][0];
@@ -32,7 +42,7 @@ router.post("/", multerConfig, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", validApps, async (req, res) => {
   try {
     let usuarios = await usuarioController.listarUsuarios();
     res.status(200).json(usuarios).end();
@@ -42,9 +52,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validApps, async (req, res) => {
   try {
-    let usuario = await usuarioController.obtenerUsuario(req.params.id);
+    let usuario = await usuarioController.obtenerUsuarioPorId(req.params.id);
     if (usuario) {
       res.status(200).json(usuario).end();
     } else {
@@ -53,6 +63,17 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).end();
+  }
+});
+
+router.post("/login", validApps, async (req, res) => {
+  const { email, password } = req.body;
+  let usuario = await usuarioController.login(email, password);
+  if (usuario) {
+    const token = jsonWebTokenConfig.sign(usuario);
+    res.status(200).json({ token }).end();
+  } else {
+    res.status(400).end();
   }
 });
 

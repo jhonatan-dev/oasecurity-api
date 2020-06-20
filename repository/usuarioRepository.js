@@ -62,7 +62,7 @@ usuarioRepository.listarUsuarios = async () => {
   }
 };
 
-usuarioRepository.obtenerUsuario = async (id) => {
+usuarioRepository.obtenerUsuarioPorId = async (id) => {
   try {
     let usuario = await usuarioModel.findOne({
       attributes: [
@@ -88,7 +88,40 @@ usuarioRepository.obtenerUsuario = async (id) => {
     });
     return usuario;
   } catch (err) {
-    throw new Error(`Error en usuarioRepository.obtenerUsuario: ${err}`);
+    throw new Error(`Error en usuarioRepository.obtenerUsuarioPorId: ${err}`);
+  }
+};
+
+usuarioRepository.obtenerUsuarioPorEmail = async (email) => {
+  try {
+    let usuario = await usuarioModel.findOne({
+      attributes: [
+        "id",
+        "dni",
+        "nombres",
+        "apellidos",
+        "email",
+        "password",
+        "image_face_id",
+        "url_foto_rostro",
+        "audio_profile_id",
+        "url_audio_grabacion",
+      ],
+      include: [
+        {
+          required: true,
+          model: rolModel,
+        },
+      ],
+      where: {
+        email: String(email).toLowerCase(),
+      },
+    });
+    return usuario;
+  } catch (err) {
+    throw new Error(
+      `Error en usuarioRepository.obtenerUsuarioPorEmail: ${err}`
+    );
   }
 };
 

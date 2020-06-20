@@ -11,8 +11,16 @@ usuarioController.listarUsuarios = async () => {
   return await usuarioService.listarUsuarios();
 };
 
-usuarioController.obtenerUsuario = async (id) => {
-  return await usuarioService.obtenerUsuario(id);
+usuarioController.obtenerUsuarioPorId = async (id) => {
+  return await usuarioService.obtenerUsuarioPorId(id);
+};
+
+usuarioController.obtenerUsuarioPorEmail = async (email) => {
+  return await usuarioService.obtenerUsuarioPorEmail(email);
+};
+
+usuarioController.login = async (email, password) => {
+  return await usuarioService.login(email, password);
 };
 
 module.exports = usuarioController;
