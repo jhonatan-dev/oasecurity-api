@@ -23,4 +23,8 @@ usuarioController.login = async (email, password) => {
   return await usuarioService.login(email, password);
 };
 
+usuarioController.loginFacial = async (faceId1, faceId2File) => {
+  return await usuarioService.loginFacial(faceId1, faceId2File);
+};
+
 module.exports = usuarioController;

@@ -5,6 +5,7 @@ const router = express.Router();
 const multer = require("multer");
 const usuarioController = require("../controllers/usuarioController");
 const jsonWebTokenConfig = require("../config/jsonWebTokenConfig");
+const { json } = require("sequelize/types");
 const multerConfig = multer(
   require("../config/multerConfig").multerConfig
 ).fields([
@@ -74,6 +75,22 @@ router.post("/login", validApps, async (req, res) => {
     res.status(200).json({ token }).end();
   } else {
     res.status(400).end();
+  }
+});
+
+router.post("/login/facial", validApps, multerConfig, async (req, res) => {
+  const { faceId1 } = req.headers;
+  const faceId2File = req.files["face_id_2"][0];
+  try {
+    let respuesta = await usuarioController.loginFacial(faceId1, faceId2File);
+    if (respuesta.isIdentical) {
+      res.status(200).json({ identico: true }).end();
+    } else {
+      res.status(200).json({ identico: false }).end();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).end();
   }
 });
 

@@ -100,4 +100,17 @@ usuarioService.login = async (email, password) => {
   }
 };
 
+usuarioService.loginFacial = async (faceId1, faceId2File) => {
+  try {
+    let faceId2Info = await azureFaceConfig.detectWithStream(faceId2File);
+    let resultado = await azureFaceConfig.verifyFaceToFace(
+      faceId1,
+      faceId2Info[0].faceId
+    );
+    return resultado;
+  } catch (err) {
+    throw new Error(`Error en usuarioService.loginFacial: ${err}`);
+  }
+};
+
 module.exports = usuarioService;
