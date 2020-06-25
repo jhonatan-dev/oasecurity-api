@@ -11,19 +11,19 @@ router.get("/interna", async (req, res) => {
       req.query.email
     );
     if (emailRegistrado) {
-      res.json(false).status(400);
+      res.status(400).json(false).end();
     } else {
-      res.json(true).status(200);
+      res.status(200).json(true).end();
     }
   } else if (req.query.dni) {
     let dniRegistrado = await validacionController.existeDNI(req.query.dni);
     if (dniRegistrado) {
-      res.json(false).status(400);
+      res.status(400).json(false).end();
     } else {
-      res.json(true).status(200);
+      res.status(200).json(true).end();
     }
   } else {
-    res.json(false).status(400);
+    res.status(400).json(false).end();
   }
 });
 
@@ -32,16 +32,17 @@ router.get("/externa", async (req, res) => {
     let informacionValida = await validacionController.dniValido(req.query.dni);
     if (informacionValida) {
       res
+        .status(200)
         .json({
           valido: true,
           informacion: informacionValida,
         })
-        .status(200);
+        .end();
     } else {
-      res.json(false).status(400);
+      res.status(400).json(false).end();
     }
   } else {
-    res.json(false).status(400);
+    res.status(400).json(false).end();
   }
 });
 

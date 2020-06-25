@@ -38,7 +38,8 @@ usuarioService.registrarUsuario = async (usuario) => {
       apellidos: usuario.apellidos,
       email: usuario.email,
       password: await bcryptLib.encryptPassword(usuario.password),
-      image_face_id: `empty_${new Date().getTime()}`, //await azureFaceConfig.detectWithStream(streamFotoRostro)[0].faceId
+      image_face_id: await azureFaceConfig.detectWithStream(streamFotoRostro)[0]
+        .faceId,
       url_foto_rostro: `${urlContenedorFotosRostro}/${archivoFotoRostroGuardado.name}`,
       audio_profile_id: `empty_${new Date().getTime()}`, //await azureSpeakerRecognitionVerificacionIndependienteConfig.crearPerfil().identificationProfileId
       url_audio_grabacion: "http://empty",
@@ -102,7 +103,8 @@ usuarioService.login = async (email, password) => {
 
 usuarioService.loginFacial = async (faceId1, faceId2File) => {
   try {
-    let faceId2Info = await azureFaceConfig.detectWithStream(faceId2File);
+    let faceId2Stream = intoStream(faceId2File.buffer);
+    let faceId2Info = await azureFaceConfig.detectWithStream(faceId2Stream);
     let resultado = await azureFaceConfig.verifyFaceToFace(
       faceId1,
       faceId2Info[0].faceId

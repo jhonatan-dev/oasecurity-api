@@ -59,7 +59,7 @@ azureFaceConfig.detectWithStream = async (readableStream) => {
     }, optionsFaceDetect);
     return response;
   } catch (err) {
-    throw new Error(`Error en azureFaceConfig.detectWithUrl: ${err}`);
+    throw new Error(`Error en azureFaceConfig.detectWithStream: ${err}`);
   }
 };
 

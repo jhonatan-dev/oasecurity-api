@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const sequelize = require("./config/sequelizeConfig");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 //Inicializaciones
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(require("./routes/index"));
+app.use(cors());
 app.use("/api/v1/validaciones", require("./routes/validacionRoute"));
 app.use("/api/v1/usuarios", require("./routes/usuarioRoute"));
 
