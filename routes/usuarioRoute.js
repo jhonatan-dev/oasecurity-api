@@ -95,4 +95,12 @@ router.post("/login/facial", validApps, multerConfig, async (req, res) => {
   }
 });
 
+router.post("/login/voz", validApps, multerConfig, async (req, res) => {
+  const { profileid } = req.headers;
+  const audioGrabacionFile = req.files["audio_grabacion"][0];
+  console.log("profileid:", profileid);
+  console.log("audioGrabacionFile:", audioGrabacionFile);
+  res.status(200).end();
+});
+
 module.exports = router;
