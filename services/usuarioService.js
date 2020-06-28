@@ -121,12 +121,16 @@ usuarioService.login = async (email, password) => {
   }
 };
 
-usuarioService.loginFacial = async (faceId1, faceId2File) => {
+usuarioService.loginFacial = async (idUsuario, faceId2File) => {
   try {
+    let usuario = await usuarioRepository.obtenerUsuarioPorId(idUsuario);
+    const faceId1Info = await azureFaceConfig.detectWithUrl(
+      `${usuario.url_foto_rostro}`
+    );
     const faceId2Stream = intoStream(faceId2File.buffer);
     const faceId2Info = await azureFaceConfig.detectWithStream(faceId2Stream);
     let resultado = await azureFaceConfig.verifyFaceToFace(
-      faceId1,
+      faceId1Info[0].faceId,
       faceId2Info[0].faceId
     );
     return resultado;

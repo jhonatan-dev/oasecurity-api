@@ -80,10 +80,10 @@ router.post("/login", validApps, async (req, res) => {
 });
 
 router.post("/login/facial", validApps, multerConfig, async (req, res) => {
-  const { faceid1 } = req.headers;
+  const { idusuario } = req.headers;
   const faceId2File = req.files["face_id_2"][0];
   try {
-    let respuesta = await usuarioController.loginFacial(faceid1, faceId2File);
+    let respuesta = await usuarioController.loginFacial(idusuario, faceId2File);
     if (respuesta.isIdentical) {
       res.status(200).json({ identico: true }).end();
     } else {

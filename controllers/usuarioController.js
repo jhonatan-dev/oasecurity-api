@@ -23,8 +23,8 @@ usuarioController.login = async (email, password) => {
   return await usuarioService.login(email, password);
 };
 
-usuarioController.loginFacial = async (faceId1, faceId2File) => {
-  return await usuarioService.loginFacial(faceId1, faceId2File);
+usuarioController.loginFacial = async (idUsuario, faceId2File) => {
+  return await usuarioService.loginFacial(idUsuario, faceId2File);
 };
 
 usuarioController.loginVoz = async (profileId, recordingFile) => {
