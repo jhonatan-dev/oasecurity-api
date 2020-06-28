@@ -26,7 +26,7 @@ const validApps = (req, res, next) => {
 router.post("/", validApps, multerConfig, async (req, res) => {
   const { dni, nombres, apellidos, email, password } = req.body;
   const archivoFotoRostro = req.files["foto_rostro"][0];
-  //const archivoAudioGrabacion = req.files["audio_grabacion"][0];
+  const archivoAudioGrabacion = req.files["audio_grabacion"][0];
   try {
     let nuevoUsuario = await usuarioController.registrarUsuario({
       dni,
@@ -35,7 +35,7 @@ router.post("/", validApps, multerConfig, async (req, res) => {
       email,
       password,
       archivoFotoRostro,
-      //archivoAudioGrabacion
+      archivoAudioGrabacion,
     });
     res.status(201).json(nuevoUsuario).end();
   } catch (error) {
@@ -98,9 +98,20 @@ router.post("/login/facial", validApps, multerConfig, async (req, res) => {
 router.post("/login/voz", validApps, multerConfig, async (req, res) => {
   const { profileid } = req.headers;
   const audioGrabacionFile = req.files["audio_grabacion"][0];
-  console.log("profileid:", profileid);
-  console.log("audioGrabacionFile:", audioGrabacionFile);
-  res.status(200).end();
+  try {
+    let respuesta = await usuarioController.loginVoz(
+      profileid,
+      audioGrabacionFile
+    );
+    if (respuesta.recognitionResult === "Accept") {
+      res.status(200).json({ identico: true }).end();
+    } else {
+      res.status(200).json({ identico: false }).end();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).end();
+  }
 });
 
 module.exports = router;

@@ -27,4 +27,8 @@ usuarioController.loginFacial = async (faceId1, faceId2File) => {
   return await usuarioService.loginFacial(faceId1, faceId2File);
 };
 
+usuarioController.loginVoz = async (profileId, recordingFile) => {
+  return await usuarioService.loginVoz(profileId, recordingFile);
+};
+
 module.exports = usuarioController;

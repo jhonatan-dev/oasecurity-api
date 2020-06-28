@@ -1,6 +1,6 @@
 "use strict";
 
-const azureSpeakerRecognitionVerificacionIndependienteConfig = {};
+const azureSpeakerRecognitionVerificacionDependienteConfig = {};
 
 const axios = require("axios");
 const https = require("https");
@@ -8,14 +8,15 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-const urlEndpointVerificacionProfiles = `${process.env.AZURE_SPEAKER_RECOGNITION_API_VERIFICATION_TEXT_INDEPENDENT_URL}/profiles`;
+const urlEndpointVerificacion = `${process.env.AZURE_SPEAKER_RECOGNITION_API_VERIFICATION_TEXT_DEPENDENT_URL}`;
+const urlEndpointVerificacionProfiles = `${process.env.AZURE_SPEAKER_RECOGNITION_API_VERIFICATION_TEXT_DEPENDENT_URL}/profiles`;
 const OcpApimSubscriptionKey = `${process.env.AZURE_SPEAKER_RECOGNITION_API_KEY}`;
 
 const headers = {
   "Ocp-Apim-Subscription-Key": OcpApimSubscriptionKey,
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerPerfil = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.obtenerPerfil = async (
   profileId
 ) => {
   try {
@@ -29,12 +30,12 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerPerfil = async (
     return response.data;
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerPerfil: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.obtenerPerfil: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerListaPerfiles = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.obtenerListaPerfiles = async (
   top = 100
 ) => {
   try {
@@ -48,12 +49,31 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerListaPerfiles = as
     return response.data;
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.obtenerListaPerfiles: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.obtenerListaPerfiles: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.crearPerfil = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.obtenerListaFrases = async (
+  locale = "en-US"
+) => {
+  try {
+    const response = await axios.get(
+      `${urlEndpointVerificacion}/phrases/${locale}`,
+      {
+        headers,
+        httpsAgent,
+      }
+    );
+    return response.data;
+  } catch (err) {
+    throw new Error(
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.obtenerListaFrases: ${err}`
+    );
+  }
+};
+
+azureSpeakerRecognitionVerificacionDependienteConfig.crearPerfil = async (
   locale = "en-US"
 ) => {
   try {
@@ -70,12 +90,12 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.crearPerfil = async (
     return response.data;
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.crearPerfil: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.crearPerfil: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.eliminarPerfil = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.eliminarPerfil = async (
   profileId
 ) => {
   try {
@@ -85,25 +105,21 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.eliminarPerfil = async (
     });
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.eliminarPerfil: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.eliminarPerfil: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.crearInscripcion = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.crearInscripcion = async (
   profileId,
   readableStream,
-  readableStreamLength,
-  ignoreMinLength = false
+  readableStreamLength
 ) => {
   try {
     const response = await axios({
       method: "post",
       url: `${urlEndpointVerificacionProfiles}/${profileId}/enrollments`,
       data: readableStream,
-      params: {
-        ignoreMinLength,
-      },
       headers: {
         "Ocp-Apim-Subscription-Key": OcpApimSubscriptionKey,
         "Content-Type": "audio/wav",
@@ -114,25 +130,21 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.crearInscripcion = async 
     return response.data;
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.crearInscripcion: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.crearInscripcion: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.verificarPerfil = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.verificarPerfil = async (
   profileId,
   newReadableStream,
-  newReadableStreamLength,
-  ignoreMinLength = false
+  newReadableStreamLength
 ) => {
   try {
     const response = await axios({
       method: "post",
       url: `${urlEndpointVerificacionProfiles}/${profileId}/verify`,
       data: newReadableStream,
-      params: {
-        ignoreMinLength,
-      },
       headers: {
         "Ocp-Apim-Subscription-Key": OcpApimSubscriptionKey,
         "Content-Type": "audio/wav",
@@ -143,12 +155,12 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.verificarPerfil = async (
     return response.data;
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.verificarPerfil: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.verificarPerfil: ${err}`
     );
   }
 };
 
-azureSpeakerRecognitionVerificacionIndependienteConfig.restablecerPerfil = async (
+azureSpeakerRecognitionVerificacionDependienteConfig.restablecerPerfil = async (
   profileId
 ) => {
   try {
@@ -160,9 +172,9 @@ azureSpeakerRecognitionVerificacionIndependienteConfig.restablecerPerfil = async
     });
   } catch (err) {
     throw new Error(
-      `Error en azureSpeakerRecognitionVerificacionIndependienteConfig.restablecerPerfil: ${err}`
+      `Error en azureSpeakerRecognitionVerificacionDependienteConfig.restablecerPerfil: ${err}`
     );
   }
 };
 
-module.exports = azureSpeakerRecognitionVerificacionIndependienteConfig;
+module.exports = azureSpeakerRecognitionVerificacionDependienteConfig;
