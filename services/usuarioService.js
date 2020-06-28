@@ -57,8 +57,6 @@ usuarioService.registrarUsuario = async (usuario) => {
       apellidos: usuario.apellidos,
       email: usuario.email,
       password: await bcryptLib.encryptPassword(usuario.password),
-      image_face_id: await azureFaceConfig.detectWithStream(streamFotoRostro)[0]
-        .faceId,
       url_foto_rostro: `${urlContenedorFotosRostro}/${archivoFotoRostroGuardado.name}`,
       audio_profile_id: await azureSpeakerRecognitionVerificacionDependienteConfig.crearPerfil()
         .identificationProfileId,

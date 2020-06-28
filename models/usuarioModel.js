@@ -33,11 +33,6 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      image_face_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
       url_foto_rostro: {
         type: Sequelize.STRING,
         allowNull: false,
