@@ -42,6 +42,10 @@ module.exports = (sequelize) => {
         allowNull: false,
         unique: true,
       },
+      audio_profile_status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       url_audio_grabacion: {
         type: Sequelize.STRING,
         allowNull: false,

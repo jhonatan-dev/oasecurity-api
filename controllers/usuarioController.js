@@ -31,4 +31,8 @@ usuarioController.loginVoz = async (profileId, recordingFile) => {
   return await usuarioService.loginVoz(profileId, recordingFile);
 };
 
+usuarioController.entrenarSpeakerRecognition = async (idUsuario) => {
+  return await usuarioService.entrenarSpeakerRecognition(idUsuario);
+};
+
 module.exports = usuarioController;

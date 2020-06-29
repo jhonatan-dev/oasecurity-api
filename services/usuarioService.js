@@ -1,6 +1,12 @@
 "use strict";
 
 const usuarioService = {};
+
+const axios = require("axios");
+const https = require("https");
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 const intoStream = require("into-stream");
 const bcryptLib = require("../libs/bcryptLib");
 const usuarioRepository = require("../repository/usuarioRepository");
@@ -13,44 +19,81 @@ const {
   nombreContenedorAudioGrabaciones,
   urlContenedorAudioGrabaciones,
 } = require("../config/azureStorageConfig");
+const { Stream } = require("stream");
+
+function subirImagenAzureStorage(usuario) {
+  const nombreArchivo = `${usuario.dni}_${usuario.archivoFotoRostro.originalname}`;
+  const stream = intoStream(usuario.archivoFotoRostro.buffer);
+  const streamLength = usuario.archivoFotoRostro.buffer.length;
+  const archivoFotoRostroGuardado = blobService.createBlockBlobFromStream(
+    nombreContenedorFotosRostro,
+    nombreArchivo,
+    stream,
+    streamLength,
+    async (error, result, response) => {
+      if (error) {
+        throw new Error(
+          `Error en usuarioService.subirImagenAzureStorage: ${error}`
+        );
+      }
+    }
+  );
+  return archivoFotoRostroGuardado;
+}
+
+function subirAudioAzureStorage(usuario) {
+  const nombreArchivo = `${usuario.dni}_${usuario.archivoAudioGrabacion.originalname}`;
+  const stream = intoStream(usuario.archivoAudioGrabacion.buffer);
+  const streamLength = usuario.archivoAudioGrabacion.buffer.length;
+  const archivoAudioGrabacionGuardado = blobService.createBlockBlobFromStream(
+    nombreContenedorAudioGrabaciones,
+    nombreArchivo,
+    stream,
+    streamLength,
+    async (error, result, response) => {
+      if (error) {
+        throw new Error(
+          `Error en usuarioService.subirAudioAzureStorage: ${error}`
+        );
+      }
+    }
+  );
+  return archivoAudioGrabacionGuardado;
+}
+
+async function generarInscripcion(archivoAudioGrabacion) {
+  const profile = await azureSpeakerRecognitionVerificacionDependienteConfig.crearPerfil();
+  const stream = intoStream(archivoAudioGrabacion.buffer);
+  const streamLength = archivoAudioGrabacion.buffer.length;
+  const enrollment = await azureSpeakerRecognitionVerificacionDependienteConfig.crearInscripcion(
+    profile.profileId,
+    stream,
+    streamLength
+  );
+  return enrollment;
+}
+
+async function entrenarInscripcion(profileId, urlAudioGrabacion) {
+  const response = await axios.get(`${urlAudioGrabacion}`, {
+    responseType: "arraybuffer",
+    httpsAgent,
+  });
+  let bufferAudioGrabacion = Buffer.from(response.data, "binary");
+  const stream = intoStream(bufferAudioGrabacion);
+  const streamLength = bufferAudioGrabacion.length;
+  const enrollment = await azureSpeakerRecognitionVerificacionDependienteConfig.crearInscripcion(
+    profileId,
+    stream,
+    streamLength
+  );
+  return enrollment;
+}
 
 usuarioService.registrarUsuario = async (usuario) => {
   try {
-    const nombreArchivoFotoRostro = `${usuario.dni}_${new Date().getTime()}_${
-      usuario.archivoFotoRostro.originalname
-    }`;
-    const nombreArchivoAudioGrabacion = `${
-      usuario.dni
-    }_${new Date().getTime()}_${usuario.archivoAudioGrabacion.originalname}`;
-    const streamFotoRostro = intoStream(usuario.archivoFotoRostro.buffer);
-    const streamLengthFotoRostro = usuario.archivoFotoRostro.buffer.length;
-    const streamAudioGrabacion = intoStream(
-      usuario.archivoAudioGrabacion.buffer
-    );
-    const streamLengthAudioGrabacion =
-      usuario.archivoAudioGrabacion.buffer.length;
-    let archivoFotoRostroGuardado = blobService.createBlockBlobFromStream(
-      nombreContenedorFotosRostro,
-      nombreArchivoFotoRostro,
-      streamFotoRostro,
-      streamLengthFotoRostro,
-      async (error, result, response) => {
-        if (error) {
-          throw new Error(`Error en usuarioService.registrarUsuario: ${error}`);
-        }
-      }
-    );
-    let archivoAudioGrabacionGuardado = blobService.createBlockBlobFromStream(
-      nombreContenedorAudioGrabaciones,
-      nombreArchivoAudioGrabacion,
-      streamAudioGrabacion,
-      streamLengthAudioGrabacion,
-      async (error, result, response) => {
-        if (error) {
-          throw new Error(`Error en usuarioService.registrarUsuario: ${error}`);
-        }
-      }
-    );
+    let archivoFotoRostroGuardado = subirImagenAzureStorage(usuario);
+    let archivoAudioGrabacionGuardado = subirAudioAzureStorage(usuario);
+    let inscripcion = await generarInscripcion(usuario.archivoAudioGrabacion);
     const usuarioParaGuardar = {
       dni: usuario.dni,
       nombres: usuario.nombres,
@@ -58,8 +101,8 @@ usuarioService.registrarUsuario = async (usuario) => {
       email: usuario.email,
       password: await bcryptLib.encryptPassword(usuario.password),
       url_foto_rostro: `${urlContenedorFotosRostro}/${archivoFotoRostroGuardado.name}`,
-      audio_profile_id: await azureSpeakerRecognitionVerificacionDependienteConfig.crearPerfil()
-        .identificationProfileId,
+      audio_profile_id: inscripcion.profileId,
+      audio_profile_status: inscripcion.enrollmentStatus,
       url_audio_grabacion: `${urlContenedorAudioGrabaciones}/${archivoAudioGrabacionGuardado.name}`,
     };
     let nuevoUsuario = await usuarioRepository.registrarUsuario(
@@ -68,6 +111,25 @@ usuarioService.registrarUsuario = async (usuario) => {
     return nuevoUsuario.toJSON();
   } catch (err) {
     throw new Error(`Error en usuarioService.registrarUsuario: ${err}`);
+  }
+};
+
+usuarioService.entrenarSpeakerRecognition = async (idUsuario) => {
+  try {
+    let usuario = await usuarioRepository.obtenerUsuarioPorId(idUsuario);
+    let inscripcion = await entrenarInscripcion(
+      usuario.audio_profile_id,
+      usuario.url_audio_grabacion
+    );
+    let estado = await usuarioRepository.actualizarUsuario({
+      id: usuario.id,
+      audio_profile_status: inscripcion.enrollmentStatus,
+    });
+    return estado[1][0].toJSON();
+  } catch (err) {
+    throw new Error(
+      `Error en usuarioService.entrenarSpeakerRecognition: ${err}`
+    );
   }
 };
 

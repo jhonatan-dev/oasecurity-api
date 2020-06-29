@@ -13,6 +13,7 @@ usuarioRepository.registrarUsuario = async (usuario) => {
       email,
       password,
       audio_profile_id,
+      audio_profile_status,
       url_foto_rostro,
       url_audio_grabacion,
     } = usuario;
@@ -23,6 +24,7 @@ usuarioRepository.registrarUsuario = async (usuario) => {
       email,
       password,
       audio_profile_id,
+      audio_profile_status,
       url_foto_rostro,
       url_audio_grabacion,
       id_rol: 2, //Cliente
@@ -30,6 +32,27 @@ usuarioRepository.registrarUsuario = async (usuario) => {
     return nuevoUsuario;
   } catch (err) {
     throw new Error(`Error en usuarioRepository.registrarUsuario: ${err}`);
+  }
+};
+
+usuarioRepository.actualizarUsuario = async (usuario) => {
+  try {
+    const { id, audio_profile_status } = usuario;
+    let usuarioActualizado = await usuarioModel.update(
+      {
+        audio_profile_status: audio_profile_status,
+      },
+      {
+        where: {
+          id: Number(id),
+        },
+        fields: ["audio_profile_status"],
+        returning: true,
+      }
+    );
+    return usuarioActualizado;
+  } catch (err) {
+    throw new Error(`Error en usuarioRepository.actualizarUsuario: ${err}`);
   }
 };
 
@@ -42,6 +65,7 @@ usuarioRepository.listarUsuarios = async () => {
         "nombres",
         "apellidos",
         "email",
+        "audio_profile_status",
         "url_foto_rostro",
       ],
       include: [
