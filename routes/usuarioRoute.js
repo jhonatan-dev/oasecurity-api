@@ -114,7 +114,7 @@ router.post("/login/voz", validApps, multerConfig, async (req, res) => {
   }
 });
 
-router.post("/entrenar", validApps, async (req, res) => {
+router.put("/entrenar", validApps, async (req, res) => {
   const { idusuario } = req.headers;
   try {
     let usuario = await usuarioController.entrenarSpeakerRecognition(idusuario);
