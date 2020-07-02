@@ -17,20 +17,37 @@ usuarioRepository.registrarUsuario = async (usuario) => {
       url_foto_rostro,
       url_audio_grabacion,
     } = usuario;
-    let nuevoUsuario = await usuarioModel.create({
-      dni,
-      nombres,
-      apellidos,
-      email,
-      password,
-      audio_profile_id,
-      audio_profile_status,
-      url_foto_rostro,
-      url_audio_grabacion,
-      id_rol: 2, //Cliente
-    });
+    let nuevoUsuario = await usuarioModel.create(
+      {
+        dni,
+        nombres,
+        apellidos,
+        email,
+        password,
+        url_foto_rostro,
+        audio_profile_id,
+        audio_profile_status,
+        url_audio_grabacion,
+        id_rol: 2, //Cliente
+      },
+      {
+        fields: [
+          "dni",
+          "nombres",
+          "apellidos",
+          "email",
+          "password",
+          "url_foto_rostro",
+          "audio_profile_id",
+          "audio_profile_status",
+          "url_audio_grabacion",
+          "id_rol",
+        ],
+      }
+    );
     return nuevoUsuario;
   } catch (err) {
+    console.log(err);
     throw new Error(`Error en usuarioRepository.registrarUsuario: ${err}`);
   }
 };
