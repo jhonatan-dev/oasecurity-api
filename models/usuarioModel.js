@@ -56,6 +56,12 @@ module.exports = (sequelize) => {
         onDelete: "RESTRICT",
         onUpdate: "RESTRICT",
       },
+      id_aplicacion: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "RESTRICT",
+        onUpdate: "RESTRICT",
+      },
     },
     {
       // opciones

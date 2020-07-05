@@ -104,6 +104,7 @@ usuarioService.registrarUsuario = async (usuario) => {
       audio_profile_id: inscripcion.profileId,
       audio_profile_status: inscripcion.enrollmentStatus,
       url_audio_grabacion: `${urlContenedorAudioGrabaciones}/${archivoAudioGrabacionGuardado.name}`,
+      id_aplicacion: usuario.id_aplicacion,
     };
     let nuevoUsuario = await usuarioRepository.registrarUsuario(
       usuarioParaGuardar
@@ -129,6 +130,19 @@ usuarioService.entrenarSpeakerRecognition = async (idUsuario) => {
   } catch (err) {
     throw new Error(
       `Error en usuarioService.entrenarSpeakerRecognition: ${err}`
+    );
+  }
+};
+
+usuarioService.listarUsuariosPorIdAplicacion = async (id_aplicacion) => {
+  try {
+    let usuarios = await usuarioRepository.listarUsuariosPorIdAplicacion(
+      id_aplicacion
+    );
+    return usuarios;
+  } catch (err) {
+    throw new Error(
+      `Error en usuarioService.listarUsuariosPorIdAplicacion: ${err}`
     );
   }
 };

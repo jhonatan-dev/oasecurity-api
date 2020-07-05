@@ -24,7 +24,7 @@ const validApps = (req, res, next) => {
 };
 
 router.post("/", validApps, multerConfig, async (req, res) => {
-  const { dni, nombres, apellidos, email, password } = req.body;
+  const { dni, nombres, apellidos, email, password, id_aplicacion } = req.body;
   const archivoFotoRostro = req.files["foto_rostro"][0];
   const archivoAudioGrabacion = req.files["audio_grabacion"][0];
   try {
@@ -36,6 +36,7 @@ router.post("/", validApps, multerConfig, async (req, res) => {
       password,
       archivoFotoRostro,
       archivoAudioGrabacion,
+      id_aplicacion,
     });
     res.status(201).json(nuevoUsuario).end();
   } catch (error) {
@@ -47,6 +48,18 @@ router.post("/", validApps, multerConfig, async (req, res) => {
 router.get("/", validApps, async (req, res) => {
   try {
     let usuarios = await usuarioController.listarUsuarios();
+    res.status(200).json(usuarios).end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).end();
+  }
+});
+
+router.get("/aplicacion/:idAplicacion", validApps, async (req, res) => {
+  try {
+    let usuarios = await usuarioController.listarUsuariosPorIdAplicacion(
+      req.params.idAplicacion
+    );
     res.status(200).json(usuarios).end();
   } catch (error) {
     console.error(error);

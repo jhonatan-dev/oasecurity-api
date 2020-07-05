@@ -2,7 +2,8 @@
 
 const usuarioRepository = {};
 
-const { usuarioModel, rolModel } = require("../models");
+const { usuarioModel, rolModel, aplicacionModel } = require("../models");
+const { Op } = require("sequelize");
 
 usuarioRepository.registrarUsuario = async (usuario) => {
   try {
@@ -16,6 +17,7 @@ usuarioRepository.registrarUsuario = async (usuario) => {
       audio_profile_status,
       url_foto_rostro,
       url_audio_grabacion,
+      id_aplicacion,
     } = usuario;
     let nuevoUsuario = await usuarioModel.create(
       {
@@ -29,6 +31,7 @@ usuarioRepository.registrarUsuario = async (usuario) => {
         audio_profile_status,
         url_audio_grabacion,
         id_rol: 2, //Cliente
+        id_aplicacion,
       },
       {
         fields: [
@@ -42,6 +45,7 @@ usuarioRepository.registrarUsuario = async (usuario) => {
           "audio_profile_status",
           "url_audio_grabacion",
           "id_rol",
+          "id_aplicacion",
         ],
       }
     );
@@ -89,15 +93,52 @@ usuarioRepository.listarUsuarios = async () => {
         {
           required: true,
           model: rolModel,
-          where: {
-            id: 2, //Rol Cliente
-          },
+        },
+        {
+          required: true,
+          model: aplicacionModel,
         },
       ],
     });
     return usuarios;
   } catch (err) {
     throw new Error(`Error en usuarioRepository.listarUsuarios: ${err}`);
+  }
+};
+usuarioRepository.listarUsuariosPorIdAplicacion = async (id_aplicacion) => {
+  try {
+    let usuarios = await usuarioModel.findAll({
+      attributes: [
+        "id",
+        "dni",
+        "nombres",
+        "apellidos",
+        "email",
+        "audio_profile_status",
+        "url_foto_rostro",
+      ],
+      include: [
+        {
+          required: true,
+          model: rolModel,
+          where: {
+            id: 2, //Rol Cliente
+          },
+        },
+        {
+          required: true,
+          model: aplicacionModel,
+          where: {
+            id: Number(id_aplicacion),
+          },
+        },
+      ],
+    });
+    return usuarios;
+  } catch (err) {
+    throw new Error(
+      `Error en usuarioRepository.listarUsuariosPorIdAplicacion: ${err}`
+    );
   }
 };
 
@@ -118,6 +159,9 @@ usuarioRepository.obtenerUsuarioPorId = async (id) => {
         {
           required: true,
           model: rolModel,
+        },
+        {
+          model: aplicacionModel,
         },
       ],
       where: {
@@ -148,6 +192,9 @@ usuarioRepository.obtenerUsuarioPorEmail = async (email) => {
         {
           required: true,
           model: rolModel,
+        },
+        {
+          model: aplicacionModel,
         },
       ],
       where: {

@@ -11,6 +11,10 @@ usuarioController.listarUsuarios = async () => {
   return await usuarioService.listarUsuarios();
 };
 
+usuarioController.listarUsuariosPorIdAplicacion = async (id_aplicacion) => {
+  return await usuarioService.listarUsuariosPorIdAplicacion(id_aplicacion);
+};
+
 usuarioController.obtenerUsuarioPorId = async (id) => {
   return await usuarioService.obtenerUsuarioPorId(id);
 };
