@@ -3,8 +3,8 @@ INSERT INTO roles (nombre) VALUES('Administrador');
 INSERT INTO roles (nombre) VALUES('Cliente');
 
 --APLICACIONES
-INSERT INTO aplicaciones (nombre, url_login) VALUES('Aplicación 1', 'http//:localhost:5000');
-INSERT INTO aplicaciones (nombre, url_login) VALUES('Aplicación 2', 'http//:localhost:5001');
+INSERT INTO public.aplicaciones (nombre, url_login, jwt_secret) VALUES('Aplicación 1', 'https://cliente1.herokuapp.com/privado', 'APP_1');
+INSERT INTO public.aplicaciones (nombre, url_login, jwt_secret) VALUES('Aplicación 2', 'https://cliente1.herokuapp.com/privado', 'APP_1');
 
 --USUARIO ADMINISTRADORES OA SECURITY
 INSERT INTO usuarios (dni, nombres, apellidos, email, "password", url_foto_rostro, audio_profile_id, audio_profile_status, url_audio_grabacion, id_rol, id_aplicacion) VALUES('67854321', 'Administrador', 'OA Security', 'oasecurity1@hotmail.com', '$2a$10$PZp7S3G8li32fo6QUsiRN.41/jHk4v6n5Hs8gXKYI7kyhG1N2wK2W', 'https://iaazurestorage.blob.core.windows.net/rostros/fotoadmin1.png', 'b622e1e8-09e7-4064-bb48-67b1b9bbd0ac', 'Enrolled', 'https://iaazurestorage.blob.core.windows.net/grabaciones/audioadmin1.wav', 1, NULL);
