@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      jwt_token: {
+      jwt_secret: {
         type: Sequelize.STRING,
         allowNull: false,
       }
