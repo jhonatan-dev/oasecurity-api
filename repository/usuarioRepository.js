@@ -97,6 +97,7 @@ usuarioRepository.listarUsuarios = async () => {
         {
           required: true,
           model: aplicacionModel,
+          attributes : ["id", "nombre"]
         },
       ],
     });
@@ -128,6 +129,7 @@ usuarioRepository.listarUsuariosPorIdAplicacion = async (id_aplicacion) => {
         {
           required: true,
           model: aplicacionModel,
+          attributes : ["id", "nombre"],
           where: {
             id: Number(id_aplicacion),
           },
@@ -162,6 +164,7 @@ usuarioRepository.obtenerUsuarioPorId = async (id) => {
         },
         {
           model: aplicacionModel,
+          attributes : ["id", "nombre"]
         },
       ],
       where: {

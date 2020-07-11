@@ -19,6 +19,10 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      jwt_token: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      }
     },
     {
       // opciones
