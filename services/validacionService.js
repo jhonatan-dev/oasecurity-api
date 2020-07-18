@@ -38,15 +38,12 @@ validacionService.existeDNI = async (dni = "") => {
 
 validacionService.dniValido = async (dni = "") => {
   try {
-    let resultadoPeticion = await axios.post(
-      `${apiJNEVerificationConfig.urlJNErequestVerification}`,
-      {
-        CODDNI: dni,
-      },
+    let resultadoPeticion = await axios.get(
+      `${apiJNEVerificationConfig.urlJNErequestVerification}/${dni}`,
       {
         headers: {
-          requestVerificationToken:
-            apiJNEVerificationConfig.requestVerificationToken,
+          "Authorization":
+            `Bearer ${apiJNEVerificationConfig.requestVerificationToken}`,
           "Content-Type": "application/json",
         },
         httpsAgent: new https.Agent({
@@ -55,11 +52,10 @@ validacionService.dniValido = async (dni = "") => {
       }
     );
     const response = resultadoPeticion.data;
-    if (String(response.data).replace(/\|/g, "").length > 0) {
-      const nombresCompletos = String(response.data).split("|");
+    if(response.success){
       return {
-        nombres: `${nombresCompletos[2]}`,
-        apellidos: `${nombresCompletos[0]} ${nombresCompletos[1]}`,
+        nombres: `${response.data.nombres}`,
+        apellidos: `${response.data.apellido_paterno} ${response.data.apellido_materno}`,
       };
     }
     return null;
