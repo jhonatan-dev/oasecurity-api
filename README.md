@@ -1,6 +1,25 @@
-# oasecurity-admin
-API de OA Security
+# Descripción
+Aplicación web API REST de OA Security.
 
+# Enlaces de documentación
+* https://docs.microsoft.com/en-us/rest/api/speakerrecognition
+* https://docs.microsoft.com/en-us/rest/api/cognitiveservices/face/face
 
-https://docs.microsoft.com/en-us/rest/api/speakerrecognition/
-https://docs.microsoft.com/en-us/rest/api/cognitiveservices/face/face
+# Variables de entorno
+* AZURE_FACE_API_KEY={AZURE_FACE_API_KEY}
+* AZURE_FACE_API_URL=https://southcentralus.api.cognitive.microsoft.com/face/v1.0
+* AZURE_SPEAKER_RECOGNITION_API_KEY={AZURE_SPEAKER_RECOGNITION_API_KEY}
+* AZURE_SPEAKER_RECOGNITION_API_VERIFICATION_TEXT_DEPENDENT_URL=https://westus.api.cognitive.microsoft.com/speaker/verification/v2.0/text-dependent
+* AZURE_SPEAKER_RECOGNITION_API_VERIFICATION_TEXT_INDEPENDENT_URL=https://westus.api.cognitive.microsoft.com/speaker/verification/v2.0/text-independent
+* AZURE_STORAGE_ACCESS_KEY={AZURE_STORAGE_ACCESS_KEY}
+* AZURE_STORAGE_ACCOUNT={AZURE_STORAGE_ACCOUNT}
+* AZURE_STORAGE_BLOB_URL={AZURE_STORAGE_BLOB_URL}
+* AZURE_STORAGE_CONNECTION_STRING={AZURE_STORAGE_CONNECTION_STRING}
+* JNE_REQUEST_VERIFICATION_TOKEN={JNE_REQUEST_VERIFICATION_TOKEN}
+* JNE_REQUEST_VERIFICATION_URL=https://apiperu.dev/api/dni
+* JWT_SECRET=OA_SECURITY_2020
+* POSTGRES_DATABASE={POSTGRES_DATABASE}
+* POSTGRES_HOST={POSTGRES_HOST}
+* POSTGRES_PASSWORD={POSTGRES_PASSWORD}
+* POSTGRES_PORT={POSTGRES_PORT}
+* POSTGRES_USERNAME={POSTGRES_USERNAME}
